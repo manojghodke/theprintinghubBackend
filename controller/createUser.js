@@ -1,36 +1,40 @@
 const User = require("../models/User");
-const path = require("path");
-const fs = require("fs");
-const fsPromises = require("fs").promises; // Using promises for async file operations
+// const path = require("path");
+// const fs = require("fs");
+// const fsPromises = require("fs").promises; // Using promises for async file operations
 
 exports.createUser = async (req, res) => {
   try {
-    console.log("req.files:", req.files); // Log the files to check the structure
-
-    const { jobTitle, description, vacancy, date, applyLink, officialWebsite } =
-      req.body;
+    // console.log("req.files:", req.files);
+    // const { jobTitle, description, vacancy, date, applyLink, officialWebsite } =
+    //   req.body;
+    const { jobTitle, adImage, content } = req.body;
 
     // Ensure files are present
     if (
-      !req.files ||
-      !req.files.advPdf ||
-      !req.files.adImage ||
-      !req.files.adPoster
+      // !req.files ||
+      // !req.files.advPdf ||
+      // !req.files.adImage ||
+      // !req.files.adPoster
+      !jobTitle ||
+      !adImage ||
+      !content
     ) {
       return res.status(400).json({
         status: 400,
-        message: "Both advPdf, adImage, and adPoster files are required",
+        message: "jobTitle , adImage and content are required",
       });
     }
 
-    const advPdf = req.files.advPdf;
-    const adImage = req.files.adImage;
-    const adPoster = req.files.adPoster;
+    // const advPdf = req.files.advPdf;
+
+    // const adImage = req.files.adImage;
+    // const adPoster = req.files.adPoster;
 
     // Log tempFilePaths to debug
-    console.log("advPdf.tempFilePath:", advPdf.tempFilePath);
-    console.log("adImage.tempFilePath:", adImage.tempFilePath);
-    console.log("adPoster.tempFilePath:", adPoster.tempFilePath);
+    // console.log("advPdf.tempFilePath:", advPdf.tempFilePath);
+    // console.log("adImage.tempFilePath:", adImage.tempFilePath);
+    // console.log("adPoster.tempFilePath:", adPoster.tempFilePath);
 
     // Validate file types (example: only PDF for advPdf, and images for adImage and adPoster)
     // if (!advPdf.name.endsWith(".pdf")) {
@@ -55,7 +59,7 @@ exports.createUser = async (req, res) => {
     // }
 
     // Ensure the /public directory and subdirectories exist
-    const uploadDir = path.join(__dirname, "..", "public");
+    // const uploadDir = path.join(__dirname, "..", "public");
     // const pdfDir = path.join(uploadDir, "pdfs");
     // const imagesDir = path.join(uploadDir, "images");
 
@@ -64,67 +68,68 @@ exports.createUser = async (req, res) => {
     // await fsPromises.mkdir(imagesDir, { recursive: true });
 
     // Define the file paths for saving
-    const advPdfPath = path.join(uploadDir, advPdf.name.replace(/\s+/g, "_")); // Replacing spaces with underscores
-    const adImagePath = path.join(uploadDir, adImage.name.replace(/\s+/g, "_"));
-    const adPosterPath = path.join(
-      uploadDir,
-      adPoster.name.replace(/\s+/g, "_")
-    );
+    // const advPdfPath = path.join(uploadDir, advPdf.name.replace(/\s+/g, "_")); // Replacing spaces with underscores
+    // const adImagePath = path.join(uploadDir, adImage.name.replace(/\s+/g, "_"));
+    // const adPosterPath = path.join(
+    // uploadDir,
+    // adPoster.name.replace(/\s+/g, "_")
+    // );
 
     // Log the final paths for debugging
-    console.log("advPdfPath:", advPdfPath);
-    console.log("adImagePath:", adImagePath);
-    console.log("adPosterPath:", adPosterPath);
+    // console.log("advPdfPath:", advPdfPath);
+    // console.log("adImagePath:", adImagePath);
+    // console.log("adPosterPath:", adPosterPath);
 
     // Move the files using fs.promises.rename
-    await fsPromises.rename(advPdf.tempFilePath, advPdfPath);
-    await fsPromises.rename(adImage.tempFilePath, adImagePath);
-    await fsPromises.rename(adPoster.tempFilePath, adPosterPath);
+    // await fsPromises.rename(advPdf.tempFilePath, advPdfPath);
+    // await fsPromises.rename(adImage.tempFilePath, adImagePath);
+    // await fsPromises.rename(adPoster.tempFilePath, adPosterPath);
 
     // Validate and convert inputs
-    if (
-      !jobTitle ||
-      !description ||
-      !vacancy ||
-      !date ||
-      !applyLink ||
-      !officialWebsite
-    ) {
-      return res.status(400).json({
-        status: 400,
-        message: "Please fill all fields",
-      });
-    }
+    // if (
+    //   !jobTitle ||
+    //   !description ||
+    //   !vacancy ||
+    //   !date ||
+    //   !applyLink ||
+    //   !officialWebsite
+    // ) {
+    //   return res.status(400).json({
+    //     status: 400,
+    //     message: "Please fill all fields",
+    //   });
+    // }
 
-    const vacancyNumber = Number(vacancy);
-    const dateISO = new Date(date);
+    // const vacancyNumber = Number(vacancy);
+    // const dateISO = new Date(date);
 
     // Validate vacancy and date
-    if (isNaN(vacancyNumber)) {
-      return res.status(400).json({
-        status: 400,
-        message: "Vacancy must be a number",
-      });
-    }
+    // if (isNaN(vacancyNumber)) {
+    //   return res.status(400).json({
+    //     status: 400,
+    //     message: "Vacancy must be a number",
+    //   });
+    // }
 
-    if (isNaN(dateISO.getTime())) {
-      return res.status(400).json({
-        status: 400,
-        message: "Date must be a valid date",
-      });
-    }
+    // if (isNaN(dateISO.getTime())) {
+    //   return res.status(400).json({
+    //     status: 400,
+    //     message: "Date must be a valid date",
+    //   });
+    // }
 
     // Create the user in the database
     const user = await User.create({
       jobTitle,
-      description,
-      vacancy: vacancyNumber,
-      date: dateISO,
-      advPdf: advPdf.name, // Save the filename in the database
-      applyLink,
-      officialWebsite,
-      adImage: adImage.name, // Save the filename in the database
-      adPoster: adPoster.name, // Save the filename in the database
+      adImage,
+      content,
+      // vacancy: vacancyNumber,
+      // date: dateISO,
+      // advPdf: advPdf.name, // Save the filename in the database
+      // applyLink,
+      // officialWebsite,
+      // adImage: adImage.name, // Save the filename in the database
+      // adPoster: adPoster.name, // Save the filename in the database
     });
 
     return res.status(201).json({

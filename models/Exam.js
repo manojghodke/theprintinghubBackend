@@ -3,7 +3,10 @@ const mongoose = require("mongoose");
 const userSchema = new mongoose.Schema(
   {
     jobTitle: { type: String, required: true },
-    date: { type: Date, required: true, default: Date.now },
+    content: { type: String, unique: false, required: true },
+    adImage: { type: String, required: true },
+    // jobTitle: { type: String, required: true },
+    // date: { type: Date, required: true, default: Date.now },
   },
   { timestamps: true }
 ); // Enable timestamps to track creation and update times

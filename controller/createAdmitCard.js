@@ -1,19 +1,22 @@
-const path = require("path");
-const fsPromises = require("fs/promises");
+// const path = require("path");
+// const fsPromises = require("fs/promises");
 const User = require("../models/AdmitCard");
 
 const sanitizeFileName = (filename) => filename.replace(/[^a-z0-9.\-]/gi, "_");
 
 exports.createAdmitCard = async (req, res) => {
   try {
-    const { jobTitle, description, admitCardLink } = req.body;
+    const { jobTitle, adImage, content } = req.body;
 
     // Ensure all required files are provided
     if (
-      !req.files ||
-      !req.files.file ||
-      !req.files.declaration ||
-      !req.files.adPoster
+      // !req.files ||
+      // !req.files.file ||
+      // !req.files.declaration ||
+      // !req.files.adPoster
+      !jobTitle ||
+      !adImage ||
+      !content
     ) {
       return res.status(400).json({
         status: 400,
@@ -21,11 +24,11 @@ exports.createAdmitCard = async (req, res) => {
       });
     }
 
-    const file = req.files.file;
-    const declaration = req.files.declaration;
-    const adPoster = req.files.adPoster;
+    // const file = req.files.file;
+    // const declaration = req.files.declaration;
+    // const adPoster = req.files.adPoster;
 
-    const uploadDir = path.join(__dirname, "..", "public");
+    // const uploadDir = path.join(__dirname, "..", "public");
     // const pdfDir = path.join(uploadDir, "pdfs");
     // const imagesDir = path.join(uploadDir, "images");
 
@@ -34,37 +37,40 @@ exports.createAdmitCard = async (req, res) => {
     // await fsPromises.mkdir(imagesDir, { recursive: true });
 
     // Sanitize file names
-    const sanitizedFileName = sanitizeFileName(file.name);
-    const sanitizedDeclarationName = sanitizeFileName(declaration.name);
-    const sanitizedAdPosterName = sanitizeFileName(adPoster.name);
+    // const sanitizedFileName = sanitizeFileName(file.name);
+    // const sanitizedDeclarationName = sanitizeFileName(declaration.name);
+    // const sanitizedAdPosterName = sanitizeFileName(adPoster.name);
 
     // Define file paths
-    const filePath = path.join(uploadDir, sanitizedFileName);
-    const declarationPath = path.join(uploadDir, sanitizedDeclarationName);
-    const adPosterPath = path.join(uploadDir, sanitizedAdPosterName);
+    // const filePath = path.join(uploadDir, sanitizedFileName);
+    // const declarationPath = path.join(uploadDir, sanitizedDeclarationName);
+    // const adPosterPath = path.join(uploadDir, sanitizedAdPosterName);
 
     // Save files
-    try {
-      await file.mv(filePath);
-      await declaration.mv(declarationPath);
-      await adPoster.mv(adPosterPath);
-    } catch (error) {
-      return res.status(500).json({ message: "Error saving files." });
-    }
+    // try {
+    //   await file.mv(filePath);
+    //   await declaration.mv(declarationPath);
+    //   await adPoster.mv(adPosterPath);
+    // } catch (error) {
+    //   return res.status(500).json({ message: "Error saving files." });
+    // }
 
     // Check required fields
-    if (!jobTitle || !description || !admitCardLink) {
-      return res.status(400).json({ message: "Please fill all fields" });
-    }
+    // if (!jobTitle || !description || !admitCardLink) {
+    //   return res.status(400).json({ message: "Please fill all fields" });
+    // }
 
     // Save admit card details in the database
     const admitCard = await User.create({
+      // jobTitle,
+      // description,
+      // file: sanitizedFileName,
+      // declaration: sanitizedDeclarationName,
+      // adPoster: sanitizedAdPosterName,
+      // admitCardLink,
       jobTitle,
-      description,
-      file: sanitizedFileName,
-      declaration: sanitizedDeclarationName,
-      adPoster: sanitizedAdPosterName,
-      admitCardLink,
+      adImage,
+      content,
     });
 
     return res.status(201).json({

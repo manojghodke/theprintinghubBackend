@@ -1,14 +1,13 @@
-const path = require("path");
-const fs = require("fs");
+// const path = require("path");
+// const fs = require("fs");
 const Exam = require("../models/Exam");
 
-// Controller function to create a new Exam
 exports.createExam = async (req, res) => {
   try {
-    const { jobTitle, date } = req.body;
+    const { jobTitle, adImage, content } = req.body;
 
     // Basic validation
-    if (!jobTitle || !date) {
+    if (!jobTitle || !adImage || !content) {
       return res.status(400).json({
         success: false,
         status: 400,
@@ -17,8 +16,11 @@ exports.createExam = async (req, res) => {
     }
 
     const newExam = new Exam({
+      // jobTitle,
+      // date,
       jobTitle,
-      date,
+      adImage,
+      content,
     });
 
     const result = await newExam.save();

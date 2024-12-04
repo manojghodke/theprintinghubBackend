@@ -5,10 +5,10 @@ const CurrentNew = require("../models/CurrentNews");
 // Controller function to create a new CurrentNews
 exports.createCurrentNew = async (req, res) => {
   try {
-    const { jobTitle, description, date } = req.body;
-
+    // const { jobTitle, description, date } = req.body;
+    const { jobTitle, content } = req.body;
     // Basic validation
-    if (!jobTitle || !description || !date) {
+    if (!jobTitle || !content) {
       return res.status(400).json({
         success: false,
         status: 400,
@@ -19,9 +19,11 @@ exports.createCurrentNew = async (req, res) => {
     // Input sanitization can be added here if necessary
 
     const newCurrentNew = new CurrentNew({
+      // jobTitle,
+      // description,
+      // date,
       jobTitle,
-      description,
-      date,
+      content,
     });
 
     const result = await newCurrentNew.save(); // Use save method to ensure document validation

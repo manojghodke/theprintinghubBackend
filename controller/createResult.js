@@ -1,23 +1,24 @@
-const path = require("path");
-const fs = require("fs");
-const fsPromises = require("fs").promises;
+// const path = require("path");
+// const fs = require("fs");
+// const fsPromises = require("fs").promises;
 const User = require("../models/Result");
 
 // Helper function to sanitize file names
-const sanitizeFileName = (fileName) => fileName.replace(/\s+/g, "_");
+// const sanitizeFileName = (fileName) => fileName.replace(/\s+/g, "_");
 
 exports.createResult = async (req, res) => {
   try {
-    const { jobTitle, description, resultLink } = req.body;
-    const file = req.files?.file;
-    const declaration = req.files?.declaration;
-    const adPoster = req.files?.adPoster;
+    const { jobTitle, adImage, content } = req.body;
+    // const { jobTitle, description, resultLink } = req.body;
+    // const file = req.files?.file;
+    // const declaration = req.files?.declaration;
+    // const adPoster = req.files?.adPoster;
 
     // Ensure all required files are provided
-    if (!file || !declaration || !adPoster) {
+    if (!jobTitle || !adImage || !content) {
       return res.status(400).json({
         status: 400,
-        message: "File, declaration, and adPoster are required.",
+        message: "fill all required.",
       });
     }
 
@@ -45,7 +46,7 @@ exports.createResult = async (req, res) => {
     // }
 
     // Ensure the directory structure exists
-    const uploadDir = path.join(__dirname, "..", "public");
+    // const uploadDir = path.join(__dirname, "..", "public");
     // const pdfDir = path.join(uploadDir, "pdfs");
     // const imagesDir = path.join(uploadDir, "images");
 
@@ -53,35 +54,38 @@ exports.createResult = async (req, res) => {
     // await fsPromises.mkdir(imagesDir, { recursive: true });
 
     // Sanitize and define file paths
-    const sanitizedFileName = sanitizeFileName(file.name);
-    const sanitizedDeclarationName = sanitizeFileName(declaration.name);
-    const sanitizedAdPosterName = sanitizeFileName(adPoster.name);
+    // const sanitizedFileName = sanitizeFileName(file.name);
+    // const sanitizedDeclarationName = sanitizeFileName(declaration.name);
+    // const sanitizedAdPosterName = sanitizeFileName(adPoster.name);
 
-    const filePath = path.join(uploadDir, sanitizedFileName);
-    const declarationPath = path.join(uploadDir, sanitizedDeclarationName);
-    const adPosterPath = path.join(uploadDir, sanitizedAdPosterName);
+    // const filePath = path.join(uploadDir, sanitizedFileName);
+    // const declarationPath = path.join(uploadDir, sanitizedDeclarationName);
+    // const adPosterPath = path.join(uploadDir, sanitizedAdPosterName);
 
     // Move files
-    await file.mv(filePath);
-    await declaration.mv(declarationPath);
-    await adPoster.mv(adPosterPath);
+    // await file.mv(filePath);
+    // await declaration.mv(declarationPath);
+    // await adPoster.mv(adPosterPath);
 
     // Validate request body
-    if (!jobTitle || !description || !resultLink) {
-      return res.status(400).json({
-        status: 400,
-        message: "Please fill all fields.",
-      });
-    }
+    // if (!jobTitle || !description || !resultLink) {
+    //   return res.status(400).json({
+    //     status: 400,
+    //     message: "Please fill all fields.",
+    //   });
+    // }
 
     // Save the result in the database
     const result = await User.create({
       jobTitle,
-      description,
-      resultLink,
-      file: sanitizedFileName,
-      declaration: sanitizedDeclarationName,
-      adPoster: sanitizedAdPosterName,
+      adImage,
+      content,
+      // jobTitle,
+      // description,
+      // resultLink,
+      // file: sanitizedFileName,
+      // declaration: sanitizedDeclarationName,
+      // adPoster: sanitizedAdPosterName,
     });
 
     return res.status(201).json({
